@@ -65,15 +65,26 @@ const MapCustom = () => {
       maximumAge: 1,
     };
     try {
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(success, error, options);
-      } else if (!navigator.geolocation) {
-        return (
-          <Modal className="">
-            This browser doesn't support Geolocation, Please Update it!
-          </Modal>
-        );
-      }
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then(function (result) {
+          if (result.state == "granted") {
+            navigator.geolocation.watchPosition(success, error, options);
+          } else if (result.state == "prompt") {
+            return (
+              <Modal className="">
+                This browser doesn't support Geolocation, Please Update it!
+              </Modal>
+            );
+          } else if (result.state == "denied") {
+            return (
+              <Modal className="">
+                Permission denied by the user! Please allow access to use this
+                service.
+              </Modal>
+            );
+          }
+        });
     } catch (e) {
       return (
         <Modal className="">
