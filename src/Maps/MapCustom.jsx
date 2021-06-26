@@ -22,51 +22,51 @@ const MapCustom = () => {
                         START
     Getting user location and watching position
     ========================================= */
-    const success = async (position) => {
-      const coords = await position.coords;
-      console.log(coords);
-      setRealTimeData({
-        accuracy: coords.accuracy,
-        altitude: coords.altitude,
-        altitudeAccuracy: coords.altitudeAccuracy,
-        heading: coords.heading,
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        speed: coords.speed,
-      });
-    };
-    const error = (e) => {
-      switch (e.code) {
-        case "PERMISSION_DENIED":
-          return (
-            <Modal>
-              Permission denied by the user! Please allow access to use this
-              feature.
-            </Modal>
-          );
-        case "POSITION_UNAVAILABLE":
-          return (
-            <Modal>
-              We're having some problems locating you. Please Reload the page.
-            </Modal>
-          );
-        case "TIMEOUT":
-          return <Modal>Sorry! Timeout! Please try again</Modal>;
+  const success = async (position) => {
+    const coords = await position.coords;
+    console.log(coords);
+    setRealTimeData({
+      accuracy: coords.accuracy,
+      altitude: coords.altitude,
+      altitudeAccuracy: coords.altitudeAccuracy,
+      heading: coords.heading,
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      speed: coords.speed,
+    });
+  };
+  const error = (e) => {
+    switch (e.code) {
+      case "PERMISSION_DENIED":
+        return (
+          <Modal>
+            Permission denied by the user! Please allow access to use this
+            feature.
+          </Modal>
+        );
+      case "POSITION_UNAVAILABLE":
+        return (
+          <Modal>
+            We're having some problems locating you. Please Reload the page.
+          </Modal>
+        );
+      case "TIMEOUT":
+        return <Modal>Sorry! Timeout! Please try again</Modal>;
 
-        default:
-          return <Modal>Error: {e}</Modal>;
-      }
+      default:
+        return <Modal>Error: {e}</Modal>;
+    }
+  };
+
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 1,
     };
-    
-    useEffect(() => {
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 1,
-      };
-      try {
-      navigator.geolocation.watchPosition(success, error, options);
+    try {
       if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(success, error, options);
       } else if (!navigator.geolocation) {
         return (
           <Modal className="">
